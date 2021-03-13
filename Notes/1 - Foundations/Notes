@@ -1,0 +1,5 @@
+-- WELCOME --
+Core Guidelines: https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#S-philosophy
+CMake: https://cmake.org/cmake/help/latest/guide/tutorial/index.html
+debug: g++ -g name.cpp
+
