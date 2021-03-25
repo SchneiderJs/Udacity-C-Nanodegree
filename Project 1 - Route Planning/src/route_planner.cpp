@@ -51,15 +51,32 @@ void RoutePlanner::AddNeighbors(RouteModel::Node *current_node) {
 }
 
 
-// TODO 5: Complete the NextNode method to sort the open list and return the next node.
+// TODO 5 - DONE: Complete the NextNode method to sort the open list and return the next node.
 // Tips:
 // - Sort the open_list according to the sum of the h value and g value.
 // - Create a pointer to the node in the list with the lowest sum.
 // - Remove that node from the open_list.
 // - Return the pointer.
 
-RouteModel::Node *RoutePlanner::NextNode() {
+bool RoutePlanner::CompareNodes(const RouteModel::Node *node_1, const RouteModel::Node *node_2) {
+    float f1 = node_1->g_value + node_1->h_value;
+    float f2 = node_2->g_value + node_2->h_value;
 
+    return f1 > f2;
+}
+
+RouteModel::Node *RoutePlanner::NextNode() {
+    // Sort the open_list according to the sum of the h value and g value.
+    std::sort(this->open_list.begin(), this->open_list.end(), RoutePlanner::CompareNodes); 
+
+    // Create a pointer to the node in the list with the lowest sum.
+    RouteModel::Node* lowest_sum_node = open_list.back();
+
+    // Remove that node from the open_list.
+    open_list.pop_back();
+
+    // Return the pointer.
+    return lowest_sum_node;
 }
 
 
@@ -77,10 +94,19 @@ std::vector<RouteModel::Node> RoutePlanner::ConstructFinalPath(RouteModel::Node 
     std::vector<RouteModel::Node> path_found;
 
     // TODO: Implement your solution here.
+    while(current_node != this->start_node) {
+        path_found.push_back(*current_node);
+        distance += current_node->distance(*current_node->parent);
+        current_node = current_node->parent;
+    }
+    path_found.push_back(*current_node);
 
+    // Note: This method returns the path in reverse order as expected in the rendering code
+    // to return in normal order, please uncomment the line below.
+    //std::reverse(path_found.begin(), path_found.end());
+    
     distance *= m_Model.MetricScale(); // Multiply the distance by the scale of the map to get meters.
     return path_found;
-
 }
 
 
